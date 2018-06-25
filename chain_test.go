@@ -57,3 +57,54 @@ func TestGetInfo(t *testing.T) {
 	assert.Equal(t, 192272, resp.BlockCPULimit)
 	assert.Equal(t, 1048240, resp.BlockNetLimit)
 }
+
+func TestGetEmptyBlock(t *testing.T) {
+	m := http.NewServeMux()
+	m.HandleFunc("/v1/chain/get_block", func(w http.ResponseWriter, r *http.Request) {
+		resp := `
+		{
+			"timestamp": "2018-06-08T08:08:08.500",
+			"producer": "dan",
+			"confirmed": 1,
+			"previous": "0000000000000000000000000000000000000000000000000000000000000000",
+			"transaction_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
+			"action_mroot": "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
+			"schedule_version": 0,
+			"new_producers": null,
+			"header_extensions": [],
+			"producer_signature": "SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne",
+			"transactions": [],
+			"block_extensions": [],
+			"id": "00000001405147477ab2f5f51cda427b638191c66d2c59aa392d5c2c98076cb0",
+			"block_num": 1,
+			"ref_block_prefix": 4126519930
+		}
+		`
+
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintln(w, resp)
+	})
+
+	s := httptest.NewServer(m)
+	defer s.Close()
+
+	api := eosgo.NewChainAPI(s.URL)
+	resp, err := api.GetBlockByNumber(1)
+
+	assert.Nil(t, err)
+	assert.Equal(t, types.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestmap)
+	assert.Equal(t, "dan", resp.Producer)
+	assert.Equal(t, 1, resp.Confirmed)
+	assert.Equal(t, "0000000000000000000000000000000000000000000000000000000000000000", resp.Previous)
+	assert.Equal(t, "0000000000000000000000000000000000000000000000000000000000000000", resp.TransactionMroot)
+	assert.Equal(t, "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906", resp.ActionMroot)
+	assert.Equal(t, 0, resp.ScheduleVersion)
+	// assert.Equal(t, nil, resp.NewProducers)
+	// assert.Equal(t, nil, resp.HeadExtensions)
+	assert.Equal(t, "SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne", resp.ProducerSignature)
+	assert.Equal(t, []types.Transaction{}, resp.Transactions)
+	// assert.Equal(t, nil, resp.BlockExtensions)
+	assert.Equal(t, "00000001405147477ab2f5f51cda427b638191c66d2c59aa392d5c2c98076cb0", resp.ID)
+	assert.Equal(t, 1, resp.BlockNum)
+	assert.Equal(t, 4126519930, resp.RefBlockPrefix)
+}
