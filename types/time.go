@@ -1,0 +1,32 @@
+package types
+
+import (
+	"strings"
+	"time"
+)
+
+// Time ...
+type Time struct {
+	time.Time
+}
+
+// NewTime ...
+func NewTime(t time.Time) Time {
+	return Time{t}
+}
+
+// UnmarshalJSON ...
+func (t *Time) UnmarshalJSON(data []byte) error {
+	d := string(data)
+	d = strings.Trim(d, "\"")
+
+	format := "2006-01-02T15:04:05.000"
+	time, err := time.Parse(format, d)
+	if err != nil {
+		return err
+	}
+
+	t.Time = time
+
+	return nil
+}
