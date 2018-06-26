@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 // TransactionHeader ...
 type TransactionHeader struct {
 	Status        string `json:"status"`
@@ -17,6 +19,27 @@ type Trx struct {
 	// ContextFreeDAta       []string  `json:"context_free_data"`
 	PackedTrx   string      `json:"packed_trx"`
 	Transaction Transaction `json:"transaction"`
+}
+
+// UnmarshalJSON ...
+func (t Trx) UnmarshalJSON(data []byte) error {
+	type shadowTrx Trx
+	var sT shadowTrx
+
+	err := json.Unmarshal(data, &sT)
+	if err != nil {
+		t.ID = string(data)
+		return nil
+	}
+
+	t.ID = sT.ID
+	t.Signatures = sT.Signatures
+	t.Compression = sT.Compression
+	t.PackedContextFreeData = sT.PackedContextFreeData
+	t.PackedTrx = sT.PackedTrx
+	t.Transaction = sT.Transaction
+
+	return nil
 }
 
 // Transaction ...
