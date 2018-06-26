@@ -1,7 +1,7 @@
 package types
 
-// TransactionsHeader ...
-type TransactionsHeader struct {
+// TransactionHeader ...
+type TransactionHeader struct {
 	Status        string `json:"status"`
 	CPUUsageUs    int    `json:"cpu_usage_us"`
 	NetUsageWords int    `json:"net_usage_words"`

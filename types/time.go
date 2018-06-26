@@ -21,12 +21,20 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	d = strings.Trim(d, "\"")
 
 	format := "2006-01-02T15:04:05.000"
-	time, err := time.Parse(format, d)
+	tTime, err := time.Parse(format, d)
+	if err == nil {
+		t.Time = tTime
+
+		return nil
+	}
+
+	format = "2006-01-02T15:04:05"
+	tTime, err = time.Parse(format, d)
 	if err != nil {
 		return err
 	}
 
-	t.Time = time
+	t.Time = tTime
 
 	return nil
 }
