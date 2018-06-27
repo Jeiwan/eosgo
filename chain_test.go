@@ -59,7 +59,7 @@ func TestGetEmptyBlock(t *testing.T) {
 	resp, err := api.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestmap)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestamp)
 	assert.Equal(t, "dan", resp.Producer)
 	assert.Equal(t, 1, resp.Confirmed)
 	assert.Equal(t, "0000000000000000000000000000000000000000000000000000000000000000", resp.Previous)
@@ -92,7 +92,7 @@ func TestGetFullBlock(t *testing.T) {
 	resp, err := api.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestmap)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestamp)
 	assert.Equal(t, "eosio", resp.Producer)
 	assert.Equal(t, 0, resp.Confirmed)
 	assert.Equal(t, "000003e7e53c1e971717ebeae28d30e6cf8d1d4c8f246f978592f4c6df27d1bc", resp.Previous)

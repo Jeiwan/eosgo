@@ -14,7 +14,7 @@ type Block struct {
 	ProducerSignature string              `json:"producer_signature"`
 	RefBlockPrefix    int                 `json:"ref_block_prefix"`
 	ScheduleVersion   int                 `json:"schedule_version"`
-	Timestmap         Time                `json:"timestamp"`
+	Timestamp         Time                `json:"timestamp"`
 	TransactionMroot  string              `json:"transaction_mroot"`
 	Transactions      []TransactionHeader `json:"transactions"`
 }
