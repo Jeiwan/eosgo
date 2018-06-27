@@ -1,4 +1,4 @@
-package types
+package eosgo
 
 // Action ...
 type Action struct {

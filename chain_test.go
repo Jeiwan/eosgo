@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/Jeiwan/eosgo"
-	"github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +35,7 @@ func TestGetInfo(t *testing.T) {
 	assert.Equal(t, 2555927, resp.LastIrreversibleBlockNum)
 	assert.Equal(t, "0027001704d9cabf1cfc1e624cd76a06b1f7a37ca4e3acf89e18bc585d07a82e", resp.LastIrreversibleBlockID)
 	assert.Equal(t, "002701629e16aa1b3c5c07038dc264a3c042dfaa0ed1103e3bb29c749ded8cc1", resp.HeadBlockID)
-	assert.Equal(t, types.NewTime(time.Date(2018, time.June, 25, 11, 16, 27, 0, time.UTC)), resp.HeadBlockTime)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, time.June, 25, 11, 16, 27, 0, time.UTC)), resp.HeadBlockTime)
 	assert.Equal(t, "eosgenblockp", resp.HeadBlockProducer)
 	assert.Equal(t, 200000000, resp.VirtualBlockCPULimit)
 	assert.Equal(t, 1048576000, resp.VirtualBlockNetLimit)
@@ -60,7 +59,7 @@ func TestGetEmptyBlock(t *testing.T) {
 	resp, err := api.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, types.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestmap)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestmap)
 	assert.Equal(t, "dan", resp.Producer)
 	assert.Equal(t, 1, resp.Confirmed)
 	assert.Equal(t, "0000000000000000000000000000000000000000000000000000000000000000", resp.Previous)
@@ -93,7 +92,7 @@ func TestGetFullBlock(t *testing.T) {
 	resp, err := api.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, types.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestmap)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestmap)
 	assert.Equal(t, "eosio", resp.Producer)
 	assert.Equal(t, 0, resp.Confirmed)
 	assert.Equal(t, "000003e7e53c1e971717ebeae28d30e6cf8d1d4c8f246f978592f4c6df27d1bc", resp.Previous)
@@ -118,7 +117,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "w00t", trx.PackedTrx)
 
 	tx := trx.Transaction
-	assert.Equal(t, types.NewTime(time.Date(2018, 6, 9, 13, 6, 32, 0, time.UTC)), tx.Expiration)
+	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 13, 6, 32, 0, time.UTC)), tx.Expiration)
 	assert.Equal(t, 997, tx.RefBlockNum)
 	assert.Equal(t, 2927439535, tx.RefBlockPrefix)
 	assert.Equal(t, 0, tx.MaxNetUsagWords)

@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/Jeiwan/eosgo/types"
 )
 
 // ChainAPI ...
@@ -21,7 +19,7 @@ func NewChainAPI(url string) *ChainAPI {
 }
 
 // GetInfo ...
-func (a ChainAPI) GetInfo() (*types.Info, error) {
+func (a ChainAPI) GetInfo() (*Info, error) {
 	resp, err := http.Get(a.PathPrefix + "/get_info")
 	if err != nil {
 		return nil, err
@@ -33,7 +31,7 @@ func (a ChainAPI) GetInfo() (*types.Info, error) {
 	}
 	resp.Body.Close()
 
-	var info types.Info
+	var info Info
 	if err = json.Unmarshal(respBody, &info); err != nil {
 		return nil, err
 	}
@@ -46,7 +44,7 @@ type getBlockByNumberReq struct {
 }
 
 // GetBlockByNumber ...
-func (a ChainAPI) GetBlockByNumber(number int) (*types.Block, error) {
+func (a ChainAPI) GetBlockByNumber(number int) (*Block, error) {
 	req := getBlockByNumberReq{Number: number}
 
 	reqRaw, err := json.Marshal(&req)
@@ -66,7 +64,7 @@ func (a ChainAPI) GetBlockByNumber(number int) (*types.Block, error) {
 	}
 	resp.Body.Close()
 
-	var block types.Block
+	var block Block
 	if err = json.Unmarshal(respBody, &block); err != nil {
 		return nil, err
 	}

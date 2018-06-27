@@ -1,4 +1,4 @@
-package types
+package eosgo
 
 // Block ...
 type Block struct {

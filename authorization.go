@@ -1,4 +1,4 @@
-package types
+package eosgo
 
 // Authorization ...
 type Authorization struct {
