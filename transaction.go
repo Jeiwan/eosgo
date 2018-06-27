@@ -1,6 +1,9 @@
 package eosgo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strings"
+)
 
 // TransactionHeader ...
 type TransactionHeader struct {
@@ -22,14 +25,17 @@ type Trx struct {
 }
 
 // UnmarshalJSON ...
-func (t Trx) UnmarshalJSON(data []byte) error {
+func (t *Trx) UnmarshalJSON(data []byte) error {
 	type shadowTrx Trx
 	var sT shadowTrx
 
 	err := json.Unmarshal(data, &sT)
 	if err != nil {
-		t.ID = string(data)
-		return nil
+		if err.Error() == "json: cannot unmarshal string into Go value of type eosgo.shadowTrx" {
+			t.ID = strings.Trim(string(data), "\"")
+			return nil
+		}
+		return err
 	}
 
 	t.ID = sT.ID
