@@ -111,3 +111,42 @@ func TestBlockTemplate(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestBlockUnmarshalling(t *testing.T) {
+	data := `
+	{
+		"timestamp": "2018-06-09T11:56:30.000",
+		"producer": "eosio",
+		"confirmed": 0,
+		"previous": "1111",
+		"transaction_mroot": "2222",
+		"action_mroot": "3333",
+		"schedule_version": 0,
+		"new_producers": null,
+		"header_extensions": [],
+		"producer_signature": "SIG",
+		"transactions": [],
+		"block_extensions": [],
+		"id": "deadbeef",
+		"block_num": 2,
+		"ref_block_prefix": 976177227
+	}
+	`
+
+	var b eosgo.Block
+	err := json.Unmarshal([]byte(data), &b)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, "eosio", b.Producer)
+	assert.Equal(t, 0, b.Confirmed)
+	assert.Equal(t, "1111", string(b.Previous))
+	assert.Equal(t, "2222", string(b.TransactionMroot))
+	assert.Equal(t, "3333", string(b.ActionMroot))
+	assert.Equal(t, 0, b.ScheduleVersion)
+	assert.Equal(t, "SIG", b.ProducerSignature)
+	assert.Empty(t, b.Transactions)
+	assert.Equal(t, "deadbeef", string(b.ID))
+	assert.Equal(t, 2, b.BlockNum)
+	assert.Equal(t, 976177227, b.RefBlockPrefix)
+}

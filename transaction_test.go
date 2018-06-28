@@ -22,9 +22,9 @@ func TestTransactionHeaderUnmarshalling(t *testing.T) {
 	err := json.Unmarshal(data, &h)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "deadbeef", h.Trx.ID)
+	assert.Equal(t, "deadbeef", string(h.Trx.ID))
 	assert.Nil(t, h.Trx.Signatures)
-	assert.Equal(t, "", h.Trx.PackedTrx)
+	assert.Empty(t, h.Trx.PackedTrx)
 
 	data = []byte(`
 		{
@@ -42,7 +42,7 @@ func TestTransactionHeaderUnmarshalling(t *testing.T) {
 	err = json.Unmarshal(data, &h)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "1a2b3c", h.Trx.ID)
+	assert.Equal(t, "1a2b3c", string(h.Trx.ID))
 	assert.Equal(t, []string{"SIG"}, h.Trx.Signatures)
-	assert.Equal(t, "deadbeef", h.Trx.PackedTrx)
+	assert.Equal(t, "deadbeef", string(h.Trx.PackedTrx))
 }

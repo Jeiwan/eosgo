@@ -2,7 +2,6 @@ package eosgo
 
 import (
 	"encoding/json"
-	"strings"
 )
 
 // TransactionHeader ...
@@ -15,35 +14,39 @@ type TransactionHeader struct {
 
 // Trx ...
 type Trx struct {
-	ID                    string   `json:"id"`
-	Signatures            []string `json:"signatures"`
-	Compression           string   `json:"compression"`
-	PackedContextFreeData string   `json:"packed_context_free_data"`
 	// ContextFreeDAta       []string  `json:"context_free_data"`
-	PackedTrx   string      `json:"packed_trx"`
-	Transaction Transaction `json:"transaction"`
+	Compression           string          `json:"compression"`
+	ID                    json.RawMessage `json:"id"`
+	PackedContextFreeData json.RawMessage `json:"packed_context_free_data"`
+	PackedTrx             json.RawMessage `json:"packed_trx"`
+	Signatures            []string        `json:"signatures"`
+	Transaction           Transaction     `json:"transaction"`
 }
 
 // UnmarshalJSON ...
 func (t *Trx) UnmarshalJSON(data []byte) error {
-	type shadowTrx Trx
-	var sT shadowTrx
+	type mirror Trx
+	var check mirror
 
-	err := json.Unmarshal(data, &sT)
-	if err != nil {
-		if err.Error() == "json: cannot unmarshal string into Go value of type eosgo.shadowTrx" {
-			t.ID = strings.Trim(string(data), "\"")
-			return nil
+	if err := json.Unmarshal(data, &check); err != nil {
+		_, ok := err.(*json.UnmarshalTypeError)
+		if ok {
+			check.ID = json.RawMessage(data)
+		} else {
+			return err
 		}
-		return err
 	}
 
-	t.ID = sT.ID
-	t.Signatures = sT.Signatures
-	t.Compression = sT.Compression
-	t.PackedContextFreeData = sT.PackedContextFreeData
-	t.PackedTrx = sT.PackedTrx
-	t.Transaction = sT.Transaction
+	*t = Trx(check)
+	if len(t.ID) > 0 {
+		t.ID = t.ID[1 : len(t.ID)-1]
+	}
+	if len(t.PackedTrx) > 0 {
+		t.PackedTrx = t.PackedTrx[1 : len(t.PackedTrx)-1]
+	}
+	if len(t.PackedContextFreeData) > 0 {
+		t.PackedContextFreeData = t.PackedContextFreeData[1 : len(t.PackedContextFreeData)-1]
+	}
 
 	return nil
 }

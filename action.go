@@ -8,7 +8,7 @@ type Action struct {
 	Name          string                 `json:"name"`
 	Authorization []Authorization        `json:"authorization"`
 	Data          map[string]interface{} `json:"data"`
-	HexData       string                 `json:"hex_data"`
+	HexData       json.RawMessage        `json:"hex_data"`
 }
 
 // UnmarshalJSON ...
@@ -20,7 +20,7 @@ func (a *Action) UnmarshalJSON(data []byte) error {
 		typeErr, ok := err.(*json.UnmarshalTypeError)
 		if ok && typeErr.Field == "data" {
 			dummy := struct {
-				HexData string `json:"data"`
+				HexData json.RawMessage `json:"data"`
 			}{}
 			if err = json.Unmarshal(data, &dummy); err != nil {
 				return err
@@ -28,16 +28,15 @@ func (a *Action) UnmarshalJSON(data []byte) error {
 
 			check.Data = map[string]interface{}{}
 			check.HexData = dummy.HexData
-
-			*a = Action(check)
-
-			return nil
+		} else {
+			return err
 		}
-
-		return err
 	}
 
 	*a = Action(check)
+	if len(a.HexData) > 0 {
+		a.HexData = []byte(a.HexData)[1 : len(a.HexData)-1]
+	}
 
 	return nil
 }

@@ -36,7 +36,7 @@ func TestActionUnmarshalling(t *testing.T) {
 	assert.Equal(t, "owner", a.Authorization[0].Permission)
 	assert.Equal(t, "value", a.Data["param"])
 	assert.Equal(t, "value2", a.Data["param2"])
-	assert.Equal(t, "deadbeef", a.HexData)
+	assert.Equal(t, "deadbeef", string(a.HexData))
 
 	data = []byte(`
 		{
@@ -61,5 +61,5 @@ func TestActionUnmarshalling(t *testing.T) {
 	assert.Equal(t, "eosio", a.Authorization[0].Actor)
 	assert.Equal(t, "owner", a.Authorization[0].Permission)
 	assert.Empty(t, a.Data)
-	assert.Equal(t, "deadbeef", a.HexData)
+	assert.Equal(t, "deadbeef", string(a.HexData))
 }
