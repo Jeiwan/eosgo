@@ -1,0 +1,26 @@
+{
+	"rows": [
+		{
+			"owner": "zbeosbp11111",
+			"total_votes": "225494609004205664.00000000000000000",
+			"producer_key": "EOS7rhgVPWWyfMqjSbNdndtCK8Gkza3xnDbUupsPLMZ6gjfQ4nX81",
+			"is_active": 1,
+			"url": "http://www.zbeos.com",
+			"unpaid_blocks": 5356,
+			"last_claim_time": "1530201589500000",
+			"location": 0
+		},
+		{
+			"owner": "worblieosbp1",
+			"total_votes": "641963941752872.50000000000000000",
+			"producer_key": "EOS1111111111111111111111111111111114T1Anm",
+			"is_active": 0,
+			"url": "https://eos.worbli.io",
+			"unpaid_blocks": 0,
+			"last_claim_time": 0,
+			"location": 0
+		}
+	],
+	"total_producer_vote_weight": "8144169062527346688.00000000000000000",
+	"more": "anotherbp"
+}
