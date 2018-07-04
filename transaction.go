@@ -14,8 +14,8 @@ type TransactionHeader struct {
 
 // Trx ...
 type Trx struct {
-	// ContextFreeDAta       []string  `json:"context_free_data"`
 	Compression           string          `json:"compression"`
+	ContextFreeData       []interface{}   `json:"context_free_data"`
 	ID                    json.RawMessage `json:"id"`
 	PackedContextFreeData json.RawMessage `json:"packed_context_free_data"`
 	PackedTrx             json.RawMessage `json:"packed_trx"`
@@ -53,12 +53,12 @@ func (t *Trx) UnmarshalJSON(data []byte) error {
 
 // Transaction ...
 type Transaction struct {
-	// ContextFreeActions []Action `json:"context_free_actions"`
-	Actions         []Action `json:"actions"`
-	DelaySec        int      `json:"delay_sec"`
-	Expiration      Time     `json:"expiration"`
-	MaxCPUUsageMs   int      `json:"max_cpu_usage_ms"`
-	MaxNetUsagWords int      `json:"max_net_usage_words"`
-	RefBlockNum     int      `json:"ref_block_num"`
-	RefBlockPrefix  int      `json:"ref_block_prefix"`
+	Actions            []Action `json:"actions"`
+	ContextFreeActions []Action `json:"context_free_actions"`
+	DelaySec           int      `json:"delay_sec"`
+	Expiration         Time     `json:"expiration"`
+	MaxCPUUsageMs      int      `json:"max_cpu_usage_ms"`
+	MaxNetUsagWords    int      `json:"max_net_usage_words"`
+	RefBlockNum        int      `json:"ref_block_num"`
+	RefBlockPrefix     int      `json:"ref_block_prefix"`
 }

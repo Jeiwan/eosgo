@@ -4,21 +4,21 @@ import "encoding/json"
 
 // Block ...
 type Block struct {
-	// BlockExtensions   []BlockExtension `jons:"block_extensions"`
-	// HeaderExtensions []HeaderExtension `json:"header_extension"`
-	// NewProducers []Producer `json:"new_producers"`
-	ActionMroot       json.RawMessage     `json:"action_mroot"`
-	BlockNum          int                 `json:"block_num"`
-	Confirmed         int                 `json:"confirmed"`
-	ID                json.RawMessage     `json:"id"`
-	Previous          json.RawMessage     `json:"previous"`
-	Producer          string              `json:"producer"`
-	ProducerSignature string              `json:"producer_signature"`
-	RefBlockPrefix    int                 `json:"ref_block_prefix"`
-	ScheduleVersion   int                 `json:"schedule_version"`
-	Timestamp         Time                `json:"timestamp"`
-	TransactionMroot  json.RawMessage     `json:"transaction_mroot"`
-	Transactions      []TransactionHeader `json:"transactions"`
+	ActionMroot       json.RawMessage          `json:"action_mroot"`
+	BlockExtensions   []map[string]interface{} `jons:"block_extensions"`
+	BlockNum          int                      `json:"block_num"`
+	Confirmed         int                      `json:"confirmed"`
+	HeaderExtensions  []map[string]interface{} `json:"header_extension"`
+	ID                json.RawMessage          `json:"id"`
+	NewProducers      []map[string]interface{} `json:"new_producers"`
+	Previous          json.RawMessage          `json:"previous"`
+	Producer          string                   `json:"producer"`
+	ProducerSignature string                   `json:"producer_signature"`
+	RefBlockPrefix    int                      `json:"ref_block_prefix"`
+	ScheduleVersion   int                      `json:"schedule_version"`
+	Timestamp         Time                     `json:"timestamp"`
+	TransactionMroot  json.RawMessage          `json:"transaction_mroot"`
+	Transactions      []TransactionHeader      `json:"transactions"`
 }
 
 // UnmarshalJSON ...

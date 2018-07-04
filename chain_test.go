@@ -113,7 +113,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, []string{"SIG_K1_KAzq4AycYweK2tLKpZYmiMaf5xrJLZVinrPSLSiPN9E5eca9cgmBFTJcvYcyY2A1TkKDg7LXxf7TgbTunTSLdxfHPiY71J"}, trx.Signatures)
 	assert.Equal(t, "none", trx.Compression)
 	assert.Empty(t, trx.PackedContextFreeData)
-	// assert.Equal(t, "none", trx.ContextFreeData)
+	assert.Equal(t, []interface{}{}, trx.ContextFreeData)
 	assert.Equal(t, "w00t", string(trx.PackedTrx))
 
 	tx := trx.Transaction
@@ -123,7 +123,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, 0, tx.MaxNetUsagWords)
 	assert.Equal(t, 0, tx.MaxCPUUsageMs)
 	assert.Equal(t, 0, tx.DelaySec)
-	// assert.Equal(t, 0, tx.ContextFreeActions)
+	assert.Equal(t, []eosgo.Action{}, tx.ContextFreeActions)
 
 	a := tx.Actions[0]
 	assert.Equal(t, "eosio", a.Account)
