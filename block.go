@@ -5,7 +5,7 @@ import "encoding/json"
 // Block ...
 type Block struct {
 	ActionMroot       json.RawMessage          `json:"action_mroot"`
-	BlockExtensions   []map[string]interface{} `jons:"block_extensions"`
+	BlockExtensions   []map[string]interface{} `json:"block_extensions"`
 	BlockNum          int                      `json:"block_num"`
 	Confirmed         int                      `json:"confirmed"`
 	HeaderExtensions  []map[string]interface{} `json:"header_extension"`
