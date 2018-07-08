@@ -10,7 +10,7 @@ type Block struct {
 	Confirmed         int                      `json:"confirmed"`
 	HeaderExtensions  []map[string]interface{} `json:"header_extension"`
 	ID                json.RawMessage          `json:"id"`
-	NewProducers      []map[string]interface{} `json:"new_producers"`
+	NewProducers      map[string]interface{}   `json:"new_producers"`
 	Previous          json.RawMessage          `json:"previous"`
 	Producer          string                   `json:"producer"`
 	ProducerSignature string                   `json:"producer_signature"`
