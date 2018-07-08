@@ -37,8 +37,8 @@ func TestGetInfo(t *testing.T) {
 	assert.Equal(t, "002701629e16aa1b3c5c07038dc264a3c042dfaa0ed1103e3bb29c749ded8cc1", resp.HeadBlockID)
 	assert.Equal(t, eosgo.NewTime(time.Date(2018, time.June, 25, 11, 16, 27, 0, time.UTC)), resp.HeadBlockTime)
 	assert.Equal(t, "eosgenblockp", resp.HeadBlockProducer)
-	assert.Equal(t, 200000000, resp.VirtualBlockCPULimit)
-	assert.Equal(t, 1048576000, resp.VirtualBlockNetLimit)
+	assert.Equal(t, 200000000, int(resp.VirtualBlockCPULimit.(float64)))
+	assert.Equal(t, 1048576000, int(resp.VirtualBlockNetLimit.(float64)))
 	assert.Equal(t, 192272, resp.BlockCPULimit)
 	assert.Equal(t, 1048240, resp.BlockNetLimit)
 }
