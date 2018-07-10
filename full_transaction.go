@@ -7,8 +7,8 @@ type FullTransaction struct {
 	ID       json.RawMessage `json:"id"`
 	BlockNum uint64          `json:"block_num"`
 	Status   string          `json:"status"`
-	// Trx Trx
-	Traces []Trace `json:"traces"`
+	Trx      FullTrx         `json:"trx"`
+	Traces   []Trace         `json:"traces"`
 }
 
 // UnmarshalJSON ...
@@ -26,4 +26,14 @@ func (tx *FullTransaction) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+// FullTrx ...
+type FullTrx struct {
+	Receipt TrxReceipt `json:"receipt"`
+}
+
+// TrxReceipt ...
+type TrxReceipt struct {
+	Status string `json:"status"`
 }
