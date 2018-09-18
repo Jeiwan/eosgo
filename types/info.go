@@ -1,4 +1,4 @@
-package eosgo
+package types
 
 // Info ...
 type Info struct {

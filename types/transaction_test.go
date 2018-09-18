@@ -1,4 +1,4 @@
-package eosgo_test
+package types_test
 
 import (
 	"encoding/json"

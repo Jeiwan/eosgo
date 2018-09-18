@@ -1,4 +1,4 @@
-package eosgo
+package types
 
 import (
 	"strings"
