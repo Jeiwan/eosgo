@@ -7,11 +7,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Jeiwan/eosgo"
+	eostypes "github.com/Jeiwan/eosgo/types"
 )
 
 // SignTransaction signs a transaction
-func (n Node) SignTransaction(tx *eosgo.Transaction, publicKey string, chainID int) error {
+func (n Node) SignTransaction(tx *eostypes.Transaction, publicKey string, chainID int) error {
 	reqBodyData, err := json.Marshal(tx)
 	if err != nil {
 		return err
