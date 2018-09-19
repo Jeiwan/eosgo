@@ -65,3 +65,18 @@ type Transaction struct {
 	Signatures            []string      `json:"signatures"`
 	TransactionExtensions []interface{} `json:"transaction_extensions"`
 }
+
+// RawTransaction ...
+type RawTransaction struct {
+	Actions               []RawAction   `json:"actions"`
+	ContextFreeActions    []RawAction   `json:"context_free_actions"`
+	ContextFreeData       []interface{} `json:"context_free_data"`
+	DelaySec              int           `json:"delay_sec"`
+	Expiration            Time          `json:"expiration"`
+	MaxCPUUsageMs         int           `json:"max_cpu_usage_ms"`
+	MaxNetUsagWords       int           `json:"max_net_usage_words"`
+	RefBlockNum           int           `json:"ref_block_num"`
+	RefBlockPrefix        int           `json:"ref_block_prefix"`
+	Signatures            []string      `json:"signatures"`
+	TransactionExtensions []interface{} `json:"transaction_extensions"`
+}

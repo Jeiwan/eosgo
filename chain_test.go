@@ -156,7 +156,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Empty(t, owner["accounts"])
 	assert.Empty(t, owner["waits"])
 
-	assert.Equal(t, "deadbeef0", string(a.HexData))
+	assert.Equal(t, "deadbeef0", string(*a.HexData))
 
 	a = tx.Actions[1]
 	assert.Equal(t, "eosio", a.Account)
@@ -171,7 +171,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "ha4tqmjxgege", data["receiver"])
 	assert.Equal(t, 8192.0, data["bytes"])
 
-	assert.Equal(t, "0000000000ea3055a09862fd499b896900200000", string(a.HexData))
+	assert.Equal(t, "0000000000ea3055a09862fd499b896900200000", string(*a.HexData))
 
 	a = tx.Actions[2]
 	assert.Equal(t, "eosio", a.Account)
@@ -188,7 +188,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "4.0000 EOS", data["stake_cpu_quantity"])
 	assert.Equal(t, 1.0, data["transfer"])
 
-	assert.Equal(t, "deadbeef1", string(a.HexData))
+	assert.Equal(t, "deadbeef1", string(*a.HexData))
 
 	a = tx.Actions[3]
 	assert.Equal(t, "eosio.token", a.Account)
@@ -204,7 +204,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "2.0000 EOS", data["quantity"])
 	assert.Equal(t, "init", data["memo"])
 
-	assert.Equal(t, "deadbeef2", string(a.HexData))
+	assert.Equal(t, "deadbeef2", string(*a.HexData))
 
 	// assert.Equal(t, nil, resp.BlockExtensions)
 	assert.Equal(t, "000003e8ddc03486114e6a1c764f0f78dab559ed18519802b4399a8d89e48264", string(resp.ID))
