@@ -88,3 +88,18 @@ func (eos EOS) GetBlockByID(id string) (*types.Block, error) {
 
 	return &block, nil
 }
+
+// PushTransaction sends transaction to the blockchain
+func (eos EOS) PushTransaction(tx *types.RawTransaction) error {
+	reqBodyData, err := json.Marshal(tx)
+	if err != nil {
+		return err
+	}
+
+	_, err = POST(eos.Config.NodeosURL+"/v1/chain/push_transaction", reqBodyData)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

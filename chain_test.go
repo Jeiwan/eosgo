@@ -1,6 +1,7 @@
 package eosgo_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -210,4 +211,34 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "000003e8ddc03486114e6a1c764f0f78dab559ed18519802b4399a8d89e48264", string(resp.ID))
 	assert.Equal(t, 1000, resp.BlockNum)
 	assert.Equal(t, 476728849, resp.RefBlockPrefix)
+}
+
+func TestPushTransaction(t *testing.T) {
+	m := http.NewServeMux()
+	m.HandleFunc("/v1/chain/push_transaction", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintln(w, "")
+	})
+
+	s := httptest.NewServer(m)
+	defer s.Close()
+
+	eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+
+	tx := &eostypes.RawTransaction{
+		Actions: []eostypes.RawAction{
+			eostypes.RawAction{
+				Account: "eosio",
+				Name:    "test",
+				Authorization: []eostypes.Authorization{
+					eostypes.Authorization{Actor: "test", Permission: "active"},
+				},
+				Data: json.RawMessage(`"deadbeef"`),
+			},
+		},
+		DelaySec: 123,
+	}
+
+	err := eos.PushTransaction(tx)
+	require.Nil(t, err)
 }
