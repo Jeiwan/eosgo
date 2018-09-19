@@ -53,12 +53,15 @@ func (t *Trx) UnmarshalJSON(data []byte) error {
 
 // Transaction ...
 type Transaction struct {
-	Actions            []Action `json:"actions"`
-	ContextFreeActions []Action `json:"context_free_actions"`
-	DelaySec           int      `json:"delay_sec"`
-	Expiration         Time     `json:"expiration"`
-	MaxCPUUsageMs      int      `json:"max_cpu_usage_ms"`
-	MaxNetUsagWords    int      `json:"max_net_usage_words"`
-	RefBlockNum        int      `json:"ref_block_num"`
-	RefBlockPrefix     int      `json:"ref_block_prefix"`
+	Actions               []Action      `json:"actions"`
+	ContextFreeActions    []Action      `json:"context_free_actions"`
+	ContextFreeData       []interface{} `json:"context_free_data"`
+	DelaySec              int           `json:"delay_sec"`
+	Expiration            Time          `json:"expiration"`
+	MaxCPUUsageMs         int           `json:"max_cpu_usage_ms"`
+	MaxNetUsagWords       int           `json:"max_net_usage_words"`
+	RefBlockNum           int           `json:"ref_block_num"`
+	RefBlockPrefix        int           `json:"ref_block_prefix"`
+	Signatures            []string      `json:"signatures"`
+	TransactionExtensions []interface{} `json:"transaction_extensions"`
 }

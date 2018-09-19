@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Jeiwan/eosgo"
+	types "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -106,7 +106,7 @@ func TestBlockTemplate(t *testing.T) {
 	}
 	`
 
-	var block eosgo.Block
+	var block types.Block
 	err := json.Unmarshal([]byte(data), &block)
 
 	assert.Nil(t, err)
@@ -133,7 +133,7 @@ func TestBlockUnmarshalling(t *testing.T) {
 	}
 	`
 
-	var b eosgo.Block
+	var b types.Block
 	err := json.Unmarshal([]byte(data), &b)
 
 	assert.Nil(t, err)

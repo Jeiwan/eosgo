@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Jeiwan/eosgo"
+	types "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +18,7 @@ func TestTransactionHeaderUnmarshalling(t *testing.T) {
 		}
 	`)
 
-	var h eosgo.TransactionHeader
+	var h types.TransactionHeader
 	err := json.Unmarshal(data, &h)
 
 	assert.Nil(t, err)

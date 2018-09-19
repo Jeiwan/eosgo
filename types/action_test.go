@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Jeiwan/eosgo"
+	types "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,7 +25,7 @@ func TestActionUnmarshalling(t *testing.T) {
 		}
 	`)
 
-	var a eosgo.Action
+	var a types.Action
 	err := json.Unmarshal(data, &a)
 
 	assert.Nil(t, err)
@@ -51,7 +51,7 @@ func TestActionUnmarshalling(t *testing.T) {
 		}
 	`)
 
-	a = eosgo.Action{}
+	a = types.Action{}
 	err = json.Unmarshal(data, &a)
 
 	assert.Nil(t, err)
