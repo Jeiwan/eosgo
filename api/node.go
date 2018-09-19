@@ -12,7 +12,7 @@ type Node struct {
 	APIEndpoint string
 }
 
-func newNode(endpointURL string) *Node {
+func NewNode(endpointURL string) *Node {
 	return &Node{
 		APIEndpoint: endpointURL,
 	}
