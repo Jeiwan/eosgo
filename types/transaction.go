@@ -80,3 +80,31 @@ type RawTransaction struct {
 	Signatures            []string      `json:"signatures"`
 	TransactionExtensions []interface{} `json:"transaction_extensions"`
 }
+
+// PackedTransaction converts RawTransaction to PackedTransaction
+func (tx RawTransaction) PackedTransaction() *PackedTransaction {
+	return &PackedTransaction{
+		Actions:               tx.Actions,
+		ContextFreeActions:    tx.ContextFreeActions,
+		DelaySec:              tx.DelaySec,
+		Expiration:            tx.Expiration,
+		MaxCPUUsageMs:         tx.MaxCPUUsageMs,
+		MaxNetUsagWords:       tx.MaxNetUsagWords,
+		RefBlockNum:           tx.RefBlockNum,
+		RefBlockPrefix:        tx.RefBlockPrefix,
+		TransactionExtensions: tx.TransactionExtensions,
+	}
+}
+
+// PackedTransaction ...
+type PackedTransaction struct {
+	Actions               []RawAction   `json:"actions"`
+	ContextFreeActions    []RawAction   `json:"context_free_actions"`
+	DelaySec              int           `json:"delay_sec"`
+	Expiration            Time          `json:"expiration"`
+	MaxCPUUsageMs         int           `json:"max_cpu_usage_ms"`
+	MaxNetUsagWords       int           `json:"max_net_usage_words"`
+	RefBlockNum           int           `json:"ref_block_num"`
+	RefBlockPrefix        int           `json:"ref_block_prefix"`
+	TransactionExtensions []interface{} `json:"transaction_extensions"`
+}

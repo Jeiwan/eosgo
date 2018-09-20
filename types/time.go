@@ -1,6 +1,8 @@
 package types
 
 import (
+	"bytes"
+	"encoding/json"
 	"strings"
 	"time"
 )
@@ -13,6 +15,20 @@ type Time struct {
 // NewTime ...
 func NewTime(t time.Time) Time {
 	return Time{t}
+}
+
+// MarshalJSON ...
+func (t *Time) MarshalJSON() ([]byte, error) {
+	data, err := json.Marshal(t.Time)
+	if err != nil {
+		return nil, err
+	}
+
+	data = bytes.TrimRight(data, `"`)
+	data = bytes.TrimRight(data, "Z")
+	data = append(data, '"')
+
+	return data, nil
 }
 
 // UnmarshalJSON ...

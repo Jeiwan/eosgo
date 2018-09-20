@@ -2,6 +2,7 @@ package eosgo
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/Jeiwan/eosgo/types"
 )
@@ -91,7 +92,14 @@ func (eos EOS) GetBlockByID(id string) (*types.Block, error) {
 
 // PushTransaction sends transaction to the blockchain
 func (eos EOS) PushTransaction(tx *types.RawTransaction) error {
-	reqBodyData, err := json.Marshal(tx)
+	reqBody := map[string]interface{}{
+		"transaction":       tx,
+		"signatures":        tx.Signatures,
+		"context_free_data": tx.ContextFreeData,
+		"compression":       "none",
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
 	if err != nil {
 		return err
 	}
@@ -102,4 +110,33 @@ func (eos EOS) PushTransaction(tx *types.RawTransaction) error {
 	}
 
 	return nil
+}
+
+// ABIJSONtoBin converts JSON representation of ABI to binary
+func (eos EOS) ABIJSONtoBin(contractAccount, action string, jsonArgs []interface{}) (string, error) {
+	reqMap := map[string]interface{}{
+		"code":   contractAccount,
+		"action": action,
+		"args":   jsonArgs,
+	}
+
+	reqData, err := json.Marshal(reqMap)
+	if err != nil {
+		return "", nil
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/abi_json_to_bin", reqData)
+
+	var resp map[string]interface{}
+	err = json.Unmarshal(respBody, &resp)
+	if err != nil {
+		return "", err
+	}
+
+	binargs, ok := resp["binargs"]
+	if !ok {
+		return "", fmt.Errorf("reseponse doesn't contain 'binargs': %s", respBody)
+	}
+
+	return binargs.(string), nil
 }

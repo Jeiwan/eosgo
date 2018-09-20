@@ -7,11 +7,11 @@ import (
 )
 
 // SignTransaction signs a transaction
-func (eos EOS) SignTransaction(tx *types.RawTransaction, publicKey string) error {
+func (eos EOS) SignTransaction(tx *types.RawTransaction, publicKey, chainID string) error {
 	reqBody := []interface{}{
 		tx,
 		[]string{publicKey},
-		"",
+		chainID,
 	}
 
 	reqBodyData, err := json.Marshal(reqBody)
