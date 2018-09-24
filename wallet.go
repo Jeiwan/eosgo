@@ -6,6 +6,24 @@ import (
 	"github.com/Jeiwan/eosgo/types"
 )
 
+/*
+	TODO:
+		create
+		create_key
+		get_public_keys
+		import_key
+		list_keys
+		list_wallets
+		lock
+		lock_all
+		open
+		remove_key
+		set_timeout
+		sign_digest
+		sign_transaction
+		unlock
+*/
+
 // SignTransaction signs a transaction
 func (eos EOS) SignTransaction(tx *types.RawTransaction, publicKey, chainID string) error {
 	reqBody := []interface{}{
