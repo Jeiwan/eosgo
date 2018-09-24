@@ -31,7 +31,6 @@ import (
 func (eos EOS) GetAccount(name string) (*GetAccountResponse, error) {
 	reqBody := map[string]interface{}{
 		"account_name": name,
-		"json":         true,
 	}
 
 	reqBodyData, err := json.Marshal(reqBody)
