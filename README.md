@@ -10,43 +10,43 @@ The library is quite raw and contains very basic features. Active development ha
 
 ### Chain API
 
-- [x] get_info (`GetInfo`)
+- [ ] abi_bin_to_json
+- [x] abi_json_to_bin (`ABIJSONtoBin`)
+- [ ] get_abi
+- [ ] get_account
 - [x] get_block (`GetBlockByNumber` & `GetBlockByID`)
 - [ ] get_block_header_state
-- [ ] get_account
 - [ ] get_code
-- [ ] get_abi
-- [ ] get_raw_code_and_abi
-- [ ] get_table_rows
-- [ ] get_currency_balance
+- [x] get_currency_balance (`GetCurrencyBalance`)
 - [ ] get_currency_stats
-- [ ] get_producers
+- [x] get_info (`GetInfo`)
 - [ ] get_producer_schedule
-- [ ] get_scheduled_transactions
-- [ ] abi_json_to_bin
-- [ ] abi_bin_to_json
+- [ ] get_producers
+- [ ] get_raw_code_and_abi
 - [ ] get_required_keys
+- [ ] get_scheduled_transactions
+- [ ] get_table_rows
 - [ ] get_transaction_id
 - [ ] push_block
-- [ ] push_transaction
+- [x] push_transaction (`PushNotification`)
 - [ ] push_transactions
 
 ### Wallet API
 
-- [ ] set_timeout
-- [ ] sign_transaction
-- [ ] sign_digest
 - [ ] create
-- [ ] open
-- [ ] lock_all
-- [ ] lock
-- [ ] unlock
-- [ ] import_key
-- [ ] remove_key
 - [ ] create_key
-- [ ] list_wallets
-- [ ] list_keys
 - [ ] get_public_keys
+- [ ] import_key
+- [ ] list_keys
+- [ ] list_wallets
+- [ ] lock
+- [ ] lock_all
+- [ ] open
+- [ ] remove_key
+- [ ] set_timeout
+- [ ] sign_digest
+- [x] sign_transaction (`SignTransaction`)
+- [ ] unlock
 
 ### Helper functions
 
