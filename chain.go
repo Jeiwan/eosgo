@@ -3,6 +3,7 @@ package eosgo
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/Jeiwan/eosgo/types"
 )
@@ -25,6 +26,31 @@ import (
       push_block
       push_transactions
 */
+
+// GetAccount returns account information by its name
+func (eos EOS) GetAccount(name string) (*GetAccountResponse, error) {
+	reqBody := map[string]interface{}{
+		"account_name": name,
+		"json":         true,
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/get_account", reqBodyData)
+	if err != nil {
+		return nil, err
+	}
+
+	var account GetAccountResponse
+	if err = json.Unmarshal(respBody, &account); err != nil {
+		return nil, err
+	}
+
+	return &account, nil
+}
 
 // GetCurrencyBalance returns account currency balance
 func (eos EOS) GetCurrencyBalance(code, account, symbol string) ([]string, error) {
@@ -163,4 +189,98 @@ func (eos EOS) ABIJSONtoBin(contractAccount, action string, jsonArgs []interface
 	}
 
 	return binargs.(string), nil
+}
+
+// GetAccountResponse represents chain/get_account response
+type GetAccountResponse struct {
+	AccountName       string     `bson:"account_name" json:"account_name"`
+	HeadBlockNum      int        `bson:"head_block_num" json:"head_block_num"`
+	HeadBlockTime     types.Time `bson:"head_block_time" json:"head_block_time"`
+	Privileged        bool       `bson:"privileged" json:"privileged"`
+	LastCodeUpdate    types.Time `bson:"last_code_update" json:"last_code_update"`
+	Created           types.Time `bson:"created" json:"created"`
+	CoreLiquidBalance string     `bson:"core_liquid_balance" json:"core_liquid_balance"`
+	RAMQuota          numOrStr   `bson:"ram_quota" json:"ram_quota"`
+	NetWeight         numOrStr   `bson:"net_weight" json:"net_weight"`
+	CPUWeight         numOrStr   `bson:"cpu_weight" json:"cpu_weight"`
+	RAMUsage          numOrStr   `bson:"ram_usage" json:"ram_usage"`
+	CPULimit          struct {
+		Available numOrStr `bson:"available" json:"available"`
+		Max       numOrStr `bson:"max" json:"max"`
+		Used      numOrStr `bson:"used" json:"used"`
+	} `bson:"cpu_limit" json:"cpu_limit"`
+	NetLimit struct {
+		Available numOrStr `bson:"available" json:"available"`
+		Max       numOrStr `bson:"max" json:"max"`
+		Used      numOrStr `bson:"used" json:"used"`
+	} `bson:"net_limit" json:"net_limit"`
+	Permissions []struct {
+		PermName     string `bson:"perm_name" json:"perm_name"`
+		Parent       string `bson:"parent" json:"parent"`
+		RequiredAuth struct {
+			Threshold int `bson:"threshold" json:"threshold"`
+			Keys      []struct {
+				Key    string `bson:"key" json:"key"`
+				Weight int    `bson:"weight" json:"weight"`
+			} `bson:"keys" json:"keys"`
+			Accounts []struct {
+				Permission types.Authorization `bson:"permission" json:"permission"`
+				Weight     int                 `bson:"weight" json:"weight"`
+			}
+			// Waits ... TODO
+		} `bson:"required_auth" json:"required_auth"`
+	} `bson:"permissions" json:"permissions"`
+	TotalResources struct {
+		Owner     string   `bson:"owner" json:"owner"`
+		NetWeight string   `bson:"net_weight" json:"net_weight"`
+		CPUWeight string   `bson:"cpu_weight" json:"cpu_weight"`
+		RAMBytes  numOrStr `bson:"ram_bytes" json:"ram_bytes"`
+	}
+	SelfDelegatedBandwidth struct {
+		From      string `bson:"from" json:"from"`
+		To        string `bson:"to" json:"to"`
+		NetWeight string `bson:"net_weight" json:"net_weight"`
+		CPUWeight string `bson:"cpu_weight" json:"cpu_weight"`
+	} `bson:"self_delegated_bandwidth" json:"self_delegated_bandwidth"`
+	// RefundRequest  TODO
+	VoterInfo struct {
+		Owner             string   `bson:"owner" json:"owner"`
+		Proxy             string   `bson:"proxy" json:"proxy"`
+		Producers         []string `bson:"producers" json:"producers"`
+		Staked            int      `bson:"staked" json:"staked"`
+		TotalVoteWeight   string   `bson:"last_vote_weight" json:"last_vote_weight"`
+		ProxiedVoteWeight string   `bson:"proxied_vote_weight" json:"proxied_vote_weight"`
+		IsProxy           int      `bson:"is_proxy" json:"is_proxy"`
+	} `bson:"voter_info" json:"voter_info"`
+}
+
+type numOrStr int
+
+func (mi *numOrStr) UnmarshalJSON(data []byte) error {
+	type mirror numOrStr
+	var m mirror
+
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		if err.Error() == "json: cannot unmarshal string into Go value of type main.mirror" {
+			var str string
+			err = json.Unmarshal(data, &str)
+			if err != nil {
+				return err
+			}
+
+			i, err := strconv.Atoi(str)
+			if err != nil {
+				return err
+			}
+
+			m = mirror(i)
+		} else {
+			return err
+		}
+	}
+
+	*mi = numOrStr(m)
+
+	return nil
 }
