@@ -57,7 +57,6 @@ func (eos EOS) GetCurrencyBalance(code, account, symbol string) ([]string, error
 		"code":    code,
 		"account": account,
 		"symbol":  symbol,
-		"json":    true,
 	}
 
 	reqBodyData, err := json.Marshal(reqBody)
