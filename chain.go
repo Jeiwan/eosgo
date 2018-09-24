@@ -20,12 +20,10 @@ import (
       get_producers
       get_producer_schedule
       get_scheduled_transactions
-      abi_json_to_bin
       abi_bin_to_json
       get_required_keys
       get_transaction_id
       push_block
-      push_transaction
       push_transactions
 */
 
