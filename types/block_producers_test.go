@@ -1,18 +1,18 @@
-package eosgo_test
+package types_test
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"testing"
 
-	"github.com/Jeiwan/eosgo"
+	types "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBlockProducersUnmarshalling(t *testing.T) {
 	data, _ := ioutil.ReadFile("./fixtures/block_producers.json")
 
-	var bps eosgo.ProducersInfo
+	var bps types.ProducersInfo
 	err := json.Unmarshal(data, &bps)
 
 	assert.Nil(t, err)

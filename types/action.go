@@ -1,4 +1,4 @@
-package eosgo
+package types
 
 import "encoding/json"
 
@@ -8,7 +8,7 @@ type Action struct {
 	Name          string                 `json:"name"`
 	Authorization []Authorization        `json:"authorization"`
 	Data          map[string]interface{} `json:"data"`
-	HexData       json.RawMessage        `json:"hex_data"`
+	HexData       *json.RawMessage       `json:"hex_data,omitempty"`
 }
 
 // UnmarshalJSON ...
@@ -27,16 +27,27 @@ func (a *Action) UnmarshalJSON(data []byte) error {
 			}
 
 			check.Data = map[string]interface{}{}
-			check.HexData = dummy.HexData
+			check.HexData = &dummy.HexData
 		} else {
 			return err
 		}
 	}
 
 	*a = Action(check)
-	if len(a.HexData) > 0 {
-		a.HexData = []byte(a.HexData)[1 : len(a.HexData)-1]
+	if a.HexData != nil {
+		hexData := *a.HexData
+		if len(hexData) > 0 {
+			*a.HexData = []byte(hexData)[1 : len(hexData)-1]
+		}
 	}
 
 	return nil
+}
+
+// RawAction ...
+type RawAction struct {
+	Account       string          `json:"account"`
+	Name          string          `json:"name"`
+	Authorization []Authorization `json:"authorization"`
+	Data          json.RawMessage `json:"data"`
 }

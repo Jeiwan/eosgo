@@ -1,6 +1,7 @@
 package eosgo_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -9,7 +10,9 @@ import (
 	"time"
 
 	"github.com/Jeiwan/eosgo"
+	eostypes "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetInfo(t *testing.T) {
@@ -24,10 +27,10 @@ func TestGetInfo(t *testing.T) {
 	s := httptest.NewServer(m)
 	defer s.Close()
 
-	api := eosgo.NewChainAPI(s.URL)
-	resp, err := api.GetInfo()
+	eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+	resp, err := eos.GetInfo()
 
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	assert.Equal(t, "db031363", resp.ServerVersion)
 	assert.Equal(t, "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906", resp.ChainID)
@@ -35,7 +38,7 @@ func TestGetInfo(t *testing.T) {
 	assert.Equal(t, 2555927, resp.LastIrreversibleBlockNum)
 	assert.Equal(t, "0027001704d9cabf1cfc1e624cd76a06b1f7a37ca4e3acf89e18bc585d07a82e", resp.LastIrreversibleBlockID)
 	assert.Equal(t, "002701629e16aa1b3c5c07038dc264a3c042dfaa0ed1103e3bb29c749ded8cc1", resp.HeadBlockID)
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, time.June, 25, 11, 16, 27, 0, time.UTC)), resp.HeadBlockTime)
+	assert.Equal(t, eostypes.NewTime(time.Date(2018, time.June, 25, 11, 16, 27, 0, time.UTC)), resp.HeadBlockTime)
 	assert.Equal(t, "eosgenblockp", resp.HeadBlockProducer)
 	assert.Equal(t, 200000000, int(resp.VirtualBlockCPULimit.(float64)))
 	assert.Equal(t, 1048576000, int(resp.VirtualBlockNetLimit.(float64)))
@@ -55,11 +58,11 @@ func TestGetEmptyBlock(t *testing.T) {
 	s := httptest.NewServer(m)
 	defer s.Close()
 
-	api := eosgo.NewChainAPI(s.URL)
-	resp, err := api.GetBlockByNumber(1)
+	eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+	resp, err := eos.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestamp)
+	assert.Equal(t, eostypes.NewTime(time.Date(2018, 6, 8, 8, 8, 8, 500000000, time.UTC)), resp.Timestamp)
 	assert.Equal(t, "dan", resp.Producer)
 	assert.Equal(t, 1, resp.Confirmed)
 	assert.Equal(t, "0000000000000000000000000000000000000000000000000000000000000000", string(resp.Previous))
@@ -88,11 +91,11 @@ func TestGetFullBlock(t *testing.T) {
 	s := httptest.NewServer(m)
 	defer s.Close()
 
-	api := eosgo.NewChainAPI(s.URL)
-	resp, err := api.GetBlockByNumber(1)
+	eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+	resp, err := eos.GetBlockByNumber(1)
 
 	assert.Nil(t, err)
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestamp)
+	assert.Equal(t, eostypes.NewTime(time.Date(2018, 6, 9, 12, 6, 33, 0, time.UTC)), resp.Timestamp)
 	assert.Equal(t, "eosio", resp.Producer)
 	assert.Equal(t, 0, resp.Confirmed)
 	assert.Equal(t, "000003e7e53c1e971717ebeae28d30e6cf8d1d4c8f246f978592f4c6df27d1bc", string(resp.Previous))
@@ -117,13 +120,13 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "w00t", string(trx.PackedTrx))
 
 	tx := trx.Transaction
-	assert.Equal(t, eosgo.NewTime(time.Date(2018, 6, 9, 13, 6, 32, 0, time.UTC)), tx.Expiration)
+	assert.Equal(t, eostypes.NewTime(time.Date(2018, 6, 9, 13, 6, 32, 0, time.UTC)), tx.Expiration)
 	assert.Equal(t, 997, tx.RefBlockNum)
 	assert.Equal(t, 2927439535, tx.RefBlockPrefix)
 	assert.Equal(t, 0, tx.MaxNetUsagWords)
 	assert.Equal(t, 0, tx.MaxCPUUsageMs)
 	assert.Equal(t, 0, tx.DelaySec)
-	assert.Equal(t, []eosgo.Action{}, tx.ContextFreeActions)
+	assert.Equal(t, []eostypes.Action{}, tx.ContextFreeActions)
 
 	a := tx.Actions[0]
 	assert.Equal(t, "eosio", a.Account)
@@ -154,7 +157,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Empty(t, owner["accounts"])
 	assert.Empty(t, owner["waits"])
 
-	assert.Equal(t, "deadbeef0", string(a.HexData))
+	assert.Equal(t, "deadbeef0", string(*a.HexData))
 
 	a = tx.Actions[1]
 	assert.Equal(t, "eosio", a.Account)
@@ -169,7 +172,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "ha4tqmjxgege", data["receiver"])
 	assert.Equal(t, 8192.0, data["bytes"])
 
-	assert.Equal(t, "0000000000ea3055a09862fd499b896900200000", string(a.HexData))
+	assert.Equal(t, "0000000000ea3055a09862fd499b896900200000", string(*a.HexData))
 
 	a = tx.Actions[2]
 	assert.Equal(t, "eosio", a.Account)
@@ -186,7 +189,7 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "4.0000 EOS", data["stake_cpu_quantity"])
 	assert.Equal(t, 1.0, data["transfer"])
 
-	assert.Equal(t, "deadbeef1", string(a.HexData))
+	assert.Equal(t, "deadbeef1", string(*a.HexData))
 
 	a = tx.Actions[3]
 	assert.Equal(t, "eosio.token", a.Account)
@@ -202,10 +205,40 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, "2.0000 EOS", data["quantity"])
 	assert.Equal(t, "init", data["memo"])
 
-	assert.Equal(t, "deadbeef2", string(a.HexData))
+	assert.Equal(t, "deadbeef2", string(*a.HexData))
 
 	// assert.Equal(t, nil, resp.BlockExtensions)
 	assert.Equal(t, "000003e8ddc03486114e6a1c764f0f78dab559ed18519802b4399a8d89e48264", string(resp.ID))
 	assert.Equal(t, 1000, resp.BlockNum)
 	assert.Equal(t, 476728849, resp.RefBlockPrefix)
+}
+
+func TestPushTransaction(t *testing.T) {
+	m := http.NewServeMux()
+	m.HandleFunc("/v1/chain/push_transaction", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintln(w, "")
+	})
+
+	s := httptest.NewServer(m)
+	defer s.Close()
+
+	eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+
+	tx := &eostypes.RawTransaction{
+		Actions: []eostypes.RawAction{
+			eostypes.RawAction{
+				Account: "eosio",
+				Name:    "test",
+				Authorization: []eostypes.Authorization{
+					eostypes.Authorization{Actor: "test", Permission: "active"},
+				},
+				Data: json.RawMessage(`"deadbeef"`),
+			},
+		},
+		DelaySec: 123,
+	}
+
+	err := eos.PushTransaction(tx)
+	require.Nil(t, err)
 }

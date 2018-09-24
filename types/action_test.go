@@ -1,10 +1,10 @@
-package eosgo_test
+package types_test
 
 import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Jeiwan/eosgo"
+	types "github.com/Jeiwan/eosgo/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,7 +25,7 @@ func TestActionUnmarshalling(t *testing.T) {
 		}
 	`)
 
-	var a eosgo.Action
+	var a types.Action
 	err := json.Unmarshal(data, &a)
 
 	assert.Nil(t, err)
@@ -51,7 +51,7 @@ func TestActionUnmarshalling(t *testing.T) {
 		}
 	`)
 
-	a = eosgo.Action{}
+	a = types.Action{}
 	err = json.Unmarshal(data, &a)
 
 	assert.Nil(t, err)
@@ -61,5 +61,5 @@ func TestActionUnmarshalling(t *testing.T) {
 	assert.Equal(t, "eosio", a.Authorization[0].Actor)
 	assert.Equal(t, "owner", a.Authorization[0].Permission)
 	assert.Empty(t, a.Data)
-	assert.Equal(t, "deadbeef", string(a.HexData))
+	assert.Equal(t, "deadbeef", string(*a.HexData))
 }
