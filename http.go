@@ -14,15 +14,22 @@ func GET(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("failed request: %s", resp.Status)
-	}
-
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	resp.Body.Close()
+
+	switch resp.StatusCode {
+	case 200:
+		fallthrough
+	case 201:
+		fallthrough
+	case 202:
+
+	default:
+		return nil, fmt.Errorf("failed request (%s): %s", resp.Status, string(respBody))
+	}
 
 	return respBody, nil
 }
@@ -35,6 +42,12 @@ func POST(url string, body []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	resp.Body.Close()
+
 	switch resp.StatusCode {
 	case 200:
 		fallthrough
@@ -43,14 +56,8 @@ func POST(url string, body []byte) ([]byte, error) {
 	case 202:
 
 	default:
-		return nil, fmt.Errorf("failed request: %s", resp.Status)
+		return nil, fmt.Errorf("failed request (%s): %s", resp.Status, string(respBody))
 	}
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	resp.Body.Close()
 
 	return respBody, nil
 }
