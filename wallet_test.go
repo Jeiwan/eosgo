@@ -61,7 +61,7 @@ func TestSignTransaction(t *testing.T) {
 		DelaySec: 123,
 	}
 
-	err := eos.SignTransaction(tx, "PUBLIC_KEY")
+	err := eos.SignTransaction(tx, "PUBLIC_KEY", "010203")
 	if err != nil {
 		fmt.Println(err)
 		require.Nil(t, err)
