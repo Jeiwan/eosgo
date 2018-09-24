@@ -15,6 +15,27 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestGetCurrencyBalance(t *testing.T) {
+	t.Run("ok", func(tt *testing.T) {
+		m := http.NewServeMux()
+		m.HandleFunc("/v1/chain/get_currency_balance", func(w http.ResponseWriter, r *http.Request) {
+			resp := `["3.1337 EOS"]`
+
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintln(w, resp)
+		})
+
+		s := httptest.NewServer(m)
+		defer s.Close()
+
+		eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+		resp, err := eos.GetCurrencyBalance("eos.token", "test", "EOS")
+		require.Nil(t, err)
+
+		assert.Equal(tt, []string{"3.1337 EOS"}, resp)
+	})
+}
+
 func TestGetInfo(t *testing.T) {
 	m := http.NewServeMux()
 	m.HandleFunc("/v1/chain/get_info", func(w http.ResponseWriter, r *http.Request) {

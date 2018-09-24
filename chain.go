@@ -14,7 +14,6 @@ import (
       get_account
       get_block_header_state
       get_code
-      get_currency_balance
       get_currency_stats
       get_producer_schedule
       get_producers
@@ -26,6 +25,33 @@ import (
       push_block
       push_transactions
 */
+
+// GetCurrencyBalance returns account currency balance
+func (eos EOS) GetCurrencyBalance(code, account, symbol string) ([]string, error) {
+	reqBody := map[string]interface{}{
+		"code":    code,
+		"account": account,
+		"symbol":  symbol,
+		"json":    true,
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/get_currency_balance", reqBodyData)
+	if err != nil {
+		return nil, err
+	}
+
+	var balanceResponse []string
+	if err = json.Unmarshal(respBody, &balanceResponse); err != nil {
+		return nil, err
+	}
+
+	return balanceResponse, nil
+}
 
 // GetInfo returns blockchain information
 func (eos EOS) GetInfo() (*types.Info, error) {
