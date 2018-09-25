@@ -233,7 +233,7 @@ type GetAccountResponse struct {
 		NetWeight string   `bson:"net_weight" json:"net_weight"`
 		CPUWeight string   `bson:"cpu_weight" json:"cpu_weight"`
 		RAMBytes  numOrStr `bson:"ram_bytes" json:"ram_bytes"`
-	}
+	} `bson:"total_resources" json:"total_resources"`
 	SelfDelegatedBandwidth struct {
 		From      string `bson:"from" json:"from"`
 		To        string `bson:"to" json:"to"`
