@@ -21,7 +21,6 @@ import (
       get_raw_code_and_abi
       get_required_keys
       get_scheduled_transactions
-      get_table_rows
       get_transaction_id
       push_block
       push_transactions
@@ -136,6 +135,33 @@ func (eos EOS) GetBlockByID(id string) (*types.Block, error) {
 	}
 
 	return &block, nil
+}
+
+// GetTableRows reads contract's table and returns its rows
+func (eos EOS) GetTableRows(contract, scope, table string) (*GetTableRowsResponse, error) {
+	reqBody := map[string]interface{}{
+		"code":  contract,
+		"scope": scope,
+		"table": table,
+		"json":  true,
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/get_table_rows", reqBodyData)
+	if err != nil {
+		return nil, err
+	}
+
+	var response GetTableRowsResponse
+	if err = json.Unmarshal(respBody, &response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
 }
 
 // PushTransaction sends transaction to the blockchain
@@ -281,4 +307,10 @@ func (mi *numOrStr) UnmarshalJSON(data []byte) error {
 	*mi = numOrStr(m)
 
 	return nil
+}
+
+// GetTableRowsResponse represents a response from chain/get_table_row
+type GetTableRowsResponse struct {
+	Rows []map[string]interface{}
+	More bool
 }

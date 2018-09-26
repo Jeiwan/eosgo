@@ -25,7 +25,7 @@ The library is quite raw and contains very basic features. Active development ha
 - [ ] get_raw_code_and_abi
 - [ ] get_required_keys
 - [ ] get_scheduled_transactions
-- [ ] get_table_rows
+- [x] get_table_rows (`GetTableRows`)
 - [ ] get_transaction_id
 - [ ] push_block
 - [x] push_transaction (`PushNotification`)

@@ -234,6 +234,53 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, 476728849, resp.RefBlockPrefix)
 }
 
+func TestGetTableRows(t *testing.T) {
+	t.Run("ok", func(tt *testing.T) {
+		m := http.NewServeMux()
+		m.HandleFunc("/v1/chain/get_table_rows", func(w http.ResponseWriter, r *http.Request) {
+			var reqBody map[string]interface{}
+			json.NewDecoder(r.Body).Decode(&reqBody)
+
+			assert.Equal(tt,
+				map[string]interface{}{
+					"code":  "eosio",
+					"scope": "test",
+					"table": "points",
+					"json":  true,
+				},
+				reqBody,
+			)
+
+			resp := `
+			{
+				"rows": [
+					{"name":"account1", "points":0},
+					{"name":"account2", "points":2}
+				],
+				"more": false
+			}
+			`
+
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintln(w, resp)
+		})
+
+		s := httptest.NewServer(m)
+		defer s.Close()
+
+		eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+		resp, err := eos.GetTableRows("eosio", "test", "points")
+		require.Nil(tt, err)
+
+		assert.False(tt, resp.More)
+		require.Len(tt, resp.Rows, 2)
+		assert.Equal(tt, "account1", resp.Rows[0]["name"].(string))
+		assert.Equal(tt, 0.0, resp.Rows[0]["points"].(float64))
+		assert.Equal(tt, "account2", resp.Rows[1]["name"].(string))
+		assert.Equal(tt, 2.0, resp.Rows[1]["points"].(float64))
+	})
+}
+
 func TestPushTransaction(t *testing.T) {
 	m := http.NewServeMux()
 	m.HandleFunc("/v1/chain/push_transaction", func(w http.ResponseWriter, r *http.Request) {
