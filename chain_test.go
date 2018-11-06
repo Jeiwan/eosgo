@@ -241,15 +241,11 @@ func TestGetTableRows(t *testing.T) {
 			var reqBody map[string]interface{}
 			json.NewDecoder(r.Body).Decode(&reqBody)
 
-			assert.Equal(tt,
-				map[string]interface{}{
-					"code":  "eosio",
-					"scope": "test",
-					"table": "points",
-					"json":  true,
-				},
-				reqBody,
-			)
+			assert.Equal(tt, "points", reqBody["table"])
+			assert.Equal(tt, "eosio", reqBody["code"])
+			assert.Equal(tt, true, reqBody["json"])
+			assert.Equal(tt, "test", reqBody["scope"])
+			assert.Equal(tt, float64(1000), reqBody["limit"])
 
 			resp := `
 			{

@@ -143,6 +143,7 @@ func (eos EOS) GetTableRows(contract, scope, table string) (*GetTableRowsRespons
 		"code":  contract,
 		"scope": scope,
 		"table": table,
+		"limit": 1000,
 		"json":  true,
 	}
 
@@ -196,10 +197,13 @@ func (eos EOS) ABIJSONtoBin(contractAccount, action string, jsonArgs []interface
 
 	reqData, err := json.Marshal(reqMap)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/abi_json_to_bin", reqData)
+	if err != nil {
+		return "", err
+	}
 
 	var resp map[string]interface{}
 	err = json.Unmarshal(respBody, &resp)

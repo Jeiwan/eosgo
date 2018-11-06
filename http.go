@@ -2,7 +2,7 @@ package eosgo
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -28,7 +28,7 @@ func GET(url string) ([]byte, error) {
 	case 202:
 
 	default:
-		return nil, fmt.Errorf("failed request (%s): %s", resp.Status, string(respBody))
+		return nil, errors.New(string(respBody))
 	}
 
 	return respBody, nil
@@ -56,7 +56,7 @@ func POST(url string, body []byte) ([]byte, error) {
 	case 202:
 
 	default:
-		return nil, fmt.Errorf("failed request (%s): %s", resp.Status, string(respBody))
+		return nil, errors.New(string(respBody))
 	}
 
 	return respBody, nil
