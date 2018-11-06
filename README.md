@@ -18,7 +18,7 @@ The library is quite raw and contains very basic features. Active development ha
 - [ ] get_block_header_state
 - [ ] get_code
 - [x] get_currency_balance (`GetCurrencyBalance`)
-- [ ] get_currency_stats
+- [x] get_currency_stats (`GetCurrencyStats`)
 - [x] get_info (`GetInfo`)
 - [ ] get_producer_schedule
 - [ ] get_producers

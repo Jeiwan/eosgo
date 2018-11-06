@@ -36,6 +36,35 @@ func TestGetCurrencyBalance(t *testing.T) {
 	})
 }
 
+func TestGetCurrencyStats(t *testing.T) {
+	t.Run("ok", func(tt *testing.T) {
+		m := http.NewServeMux()
+		m.HandleFunc("/v1/chain/get_currency_stats", func(w http.ResponseWriter, r *http.Request) {
+			resp := `{
+				"EOS": {
+					"supply": "1019555863.6445 EOS",
+					"max_supply": "10000000000.0000 EOS",
+					"issuer": "eosio"
+				}
+			}`
+
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintln(w, resp)
+		})
+
+		s := httptest.NewServer(m)
+		defer s.Close()
+
+		eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+		resp, err := eos.GetCurrencyStats("eos.token", "EOS")
+		require.Nil(t, err)
+
+		assert.Equal(tt, "1019555863.6445 EOS", resp["EOS"].Supply)
+		assert.Equal(tt, "10000000000.0000 EOS", resp["EOS"].MaxSupply)
+		assert.Equal(tt, "eosio", resp["EOS"].Issuer)
+	})
+}
+
 func TestGetInfo(t *testing.T) {
 	m := http.NewServeMux()
 	m.HandleFunc("/v1/chain/get_info", func(w http.ResponseWriter, r *http.Request) {

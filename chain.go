@@ -15,7 +15,6 @@ import (
       get_account
       get_block_header_state
       get_code
-      get_currency_stats
       get_producer_schedule
       get_producers
       get_raw_code_and_abi
@@ -74,6 +73,31 @@ func (eos EOS) GetCurrencyBalance(code, account, symbol string) ([]string, error
 	}
 
 	return balanceResponse, nil
+}
+
+// GetCurrencyStats returns currency stats
+func (eos EOS) GetCurrencyStats(code, symbol string) (map[string]CurrencyStats, error) {
+	reqBody := map[string]interface{}{
+		"code":   code,
+		"symbol": symbol,
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/get_currency_stats", reqBodyData)
+	if err != nil {
+		return nil, err
+	}
+
+	var statsResponse map[string]CurrencyStats
+	if err = json.Unmarshal(respBody, &statsResponse); err != nil {
+		return nil, err
+	}
+
+	return statsResponse, nil
 }
 
 // GetInfo returns blockchain information
@@ -317,4 +341,11 @@ func (mi *numOrStr) UnmarshalJSON(data []byte) error {
 type GetTableRowsResponse struct {
 	Rows []map[string]interface{}
 	More bool
+}
+
+// CurrencyStats represents currency stats as returned by GetCurrencyStats
+type CurrencyStats struct {
+	Supply    string `json:"supply"`
+	MaxSupply string `json:"max_supply"`
+	Issuer    string `json:"issuer"`
 }
