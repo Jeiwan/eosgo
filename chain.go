@@ -189,6 +189,35 @@ func (eos EOS) GetTableRows(contract, scope, table string) (*GetTableRowsRespons
 	return &response, nil
 }
 
+// GetTableByScope reads contract's tables and allows to filter them by scope
+func (eos EOS) GetTableByScope(code, table, lowerBound, upperBound string, limit int) (*GetTableByScopeResponse, error) {
+	reqBody := map[string]interface{}{
+		"code":        code,
+		"table":       table,
+		"lower_bound": lowerBound,
+		"upper_bound": upperBound,
+		"limit":       limit,
+		"json":        true,
+	}
+
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	respBody, err := POST(eos.Config.NodeosURL+"/v1/chain/get_table_by_scope", reqBodyData)
+	if err != nil {
+		return nil, err
+	}
+
+	var response GetTableByScopeResponse
+	if err = json.Unmarshal(respBody, &response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
 // PushTransaction sends transaction to the blockchain
 func (eos EOS) PushTransaction(tx *types.RawTransaction) error {
 	reqBody := map[string]interface{}{
@@ -341,6 +370,21 @@ func (mi *numOrStr) UnmarshalJSON(data []byte) error {
 type GetTableRowsResponse struct {
 	Rows []map[string]interface{}
 	More bool
+}
+
+// GetTableByScopeResponse represents a response from chain/get_table_by_scope
+type GetTableByScopeResponse struct {
+	Rows []TableByScopeRow `json:"rows"`
+	More string            `json:"more"`
+}
+
+// TableByScopeRow a row in GetTableByScopeResponse
+type TableByScopeRow struct {
+	Code  string `json:"code"`
+	Scope string `json:"scope"`
+	Table string `json:"table"`
+	Payer string `json:"payer"`
+	Count int    `json:"count"`
 }
 
 // CurrencyStats represents currency stats as returned by GetCurrencyStats

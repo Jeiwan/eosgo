@@ -263,6 +263,59 @@ func TestGetFullBlock(t *testing.T) {
 	assert.Equal(t, 476728849, resp.RefBlockPrefix)
 }
 
+func TestGetTableByScope(t *testing.T) {
+	t.Run("ok", func(tt *testing.T) {
+		m := http.NewServeMux()
+		m.HandleFunc("/v1/chain/get_table_by_scope", func(w http.ResponseWriter, r *http.Request) {
+			var reqBody map[string]interface{}
+			json.NewDecoder(r.Body).Decode(&reqBody)
+
+			assert.Equal(tt, "eosio.token", reqBody["code"])
+			assert.Equal(tt, "accounts", reqBody["table"])
+			assert.Equal(tt, "b1", reqBody["lower_bound"])
+			assert.Equal(tt, "b3", reqBody["upper_bound"])
+			assert.Equal(tt, float64(100), reqBody["limit"])
+			assert.Equal(tt, true, reqBody["json"])
+
+			resp := `
+			{
+				"rows": [
+				  { "code": "eosio.token", "scope": "b1", "table": "accounts", "payer": "eosio", "count": 1 },
+				  { "code": "eosio.token", "scope": "b1.x", "table": "accounts", "payer": "staked.x", "count": 1 },
+				  { "code": "eosio.token", "scope": "b11111111111", "table": "accounts", "payer": "ha4tmnzxgqge", "count": 1 },
+				  { "code": "eosio.token", "scope": "b11yuz5ekrnh", "table": "accounts", "payer": "betdicelucky", "count": 1 },
+				  { "code": "eosio.token", "scope": "b12121212121", "table": "accounts", "payer": "pxneosincome", "count": 1 },
+				  { "code": "eosio.token", "scope": "b12345123451", "table": "accounts", "payer": "eosaccountwm", "count": 1 },
+				  { "code": "eosio.token", "scope": "b123b321b345", "table": "accounts", "payer": "itokenpocket", "count": 1 },
+				  { "code": "eosio.token", "scope": "b123dfhhdffs", "table": "accounts", "payer": "lynxlynxlynx", "count": 1 },
+				  { "code": "eosio.token", "scope": "b12dgh4532cc", "table": "accounts", "payer": "lynxlynxlynx", "count": 1 },
+				  { "code": "eosio.token", "scope": "b12gtmgtckrt", "table": "accounts", "payer": "glfrpqzvusrs", "count": 1 }
+				],
+				"more": "b12ict3mtdho"
+			  }
+			`
+
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintln(w, resp)
+		})
+
+		s := httptest.NewServer(m)
+		defer s.Close()
+
+		eos := eosgo.New(eosgo.EOSConfig{NodeosURL: s.URL})
+		resp, err := eos.GetTableByScope("eosio.token", "accounts", "b1", "b3", 100)
+		require.Nil(tt, err)
+
+		require.Len(tt, resp.Rows, 10)
+		assert.Equal(tt, "b12ict3mtdho", resp.More)
+		assert.Equal(tt, "eosio.token", resp.Rows[0].Code)
+		assert.Equal(tt, "b1", resp.Rows[0].Scope)
+		assert.Equal(tt, "accounts", resp.Rows[0].Table)
+		assert.Equal(tt, "eosio", resp.Rows[0].Payer)
+		assert.Equal(tt, 1, resp.Rows[0].Count)
+	})
+}
+
 func TestGetTableRows(t *testing.T) {
 	t.Run("ok", func(tt *testing.T) {
 		m := http.NewServeMux()

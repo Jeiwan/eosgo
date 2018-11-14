@@ -26,6 +26,7 @@ The library is quite raw and contains very basic features. Active development ha
 - [ ] get_required_keys
 - [ ] get_scheduled_transactions
 - [x] get_table_rows (`GetTableRows`)
+- [x] get_table_by_scope (`GetTableByRow`)
 - [ ] get_transaction_id
 - [ ] push_block
 - [x] push_transaction (`PushNotification`)
